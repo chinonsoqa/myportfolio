@@ -11,7 +11,7 @@
 - Negative + edge cases
 
 **Repository**
-- https://github.com/chinonsoqa/qaautomationlabs-e2e-tests
+- https://github.com/chinonsoqa/qaautomationlabs
 
 **Highlights**
 - CI-safe test design

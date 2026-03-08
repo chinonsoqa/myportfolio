@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD Pipeline — Chinonso Nwosu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --secondary: #6366f1;
+            --accent: #14b8a6;
+            --github: #238636;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gradient-1: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #14b8a6 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb-1 { top: -200px; right: -200px; background: var(--github); }
+        .glow-orb-2 { bottom: -200px; left: -200px; background: var(--secondary); }
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100px; height: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb span { color: var(--primary); }
+        .page-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-header h1 i {
+            background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 1rem;
+        }
+        .page-header p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+        .content { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+        .content-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .content-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .content-section h2 i { color: var(--primary); }
+        .content-section p { color: var(--text-muted); margin-bottom: 1rem; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: var(--primary); }
+        .pipeline-visual {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 2rem 0;
+            overflow-x: auto;
+        }
+        .pipeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 100px;
+        }
+        .step-icon {
+            width: 60px; height: 60px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+        .step-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .pipeline-arrow {
+            color: var(--card-border);
+            font-size: 1.5rem;
+        }
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .code-header i { color: var(--github); }
+        .code-header span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-key { color: #9cdcfe; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .feature-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .feature-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .feature-card h4 i { color: var(--accent); }
+        .feature-card p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+        .highlight-box {
+            background: rgba(35, 134, 54, 0.1);
+            border: 1px solid rgba(35, 134, 54, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .highlight-box h3 {
+            color: var(--github);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .highlight-box p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(14, 165, 233, 0.4); }
+        .btn-github {
+            background: var(--github);
+            color: white;
+        }
+        .btn-github:hover { transform: translateY(-2px); }
+        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+        footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+        }
+        footer p { color: var(--text-muted); font-size: 0.9rem; }
+        footer a { color: var(--primary); text-decoration: none; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .content { padding: 2rem 1rem; }
+            .pipeline-visual { justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <nav>
+        <div class="nav-content">
+            <a href="index.html" class="logo">CN</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#portfolio">Portfolio</a></li>
+                <li><a href="automation-projects.html">Automation</a></li>
+                <li><a href="api-testing.html">API Testing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>CI/CD Pipeline</span>
+        </div>
+        <h1><i class="fas fa-infinity"></i> CI/CD Pipeline</h1>
+        <p>Continuous integration and deployment setup with GitHub Actions for automated testing</p>
+    </header>
+
+    <main class="content">
+        <a href="index.html#portfolio" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Portfolio
+        </a>
+
+        <section class="content-section">
+            <h2><i class="fas fa-sitemap"></i> Pipeline Overview</h2>
+            <p>Automated test execution pipeline triggered on every push and pull request to ensure code quality and prevent regressions.</p>
+            
+            <div class="pipeline-visual">
+                <div class="pipeline-step">
+                    <div class="step-icon"><i class="fas fa-code-commit"></i></div>
+                    <span class="step-label">Push/PR</span>
+                </div>
+                <i class="fas fa-chevron-right pipeline-arrow"></i>
+                <div class="pipeline-step">
+                    <div class="step-icon"><i class="fas fa-download"></i></div>
+                    <span class="step-label">Checkout</span>
+                </div>
+                <i class="fas fa-chevron-right pipeline-arrow"></i>
+                <div class="pipeline-step">
+                    <div class="step-icon"><i class="fas fa-box"></i></div>
+                    <span class="step-label">Install Deps</span>
+                </div>
+                <i class="fas fa-chevron-right pipeline-arrow"></i>
+                <div class="pipeline-step">
+                    <div class="step-icon"><i class="fas fa-vial"></i></div>
+                    <span class="step-label">Run Tests</span>
+                </div>
+                <i class="fas fa-chevron-right pipeline-arrow"></i>
+                <div class="pipeline-step">
+                    <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                    <span class="step-label">Generate Report</span>
+                </div>
+                <i class="fas fa-chevron-right pipeline-arrow"></i>
+                <div class="pipeline-step">
+                    <div class="step-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <span class="step-label">Upload Artifacts</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fab fa-github"></i> GitHub Actions Workflow</h2>
+            <p>The complete workflow configuration for running Cypress E2E tests:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <i class="fab fa-github"></i>
+                    <span>.github/workflows/cypress-tests.yml</span>
+                </div>
+                <code>
+<span class="code-key">name:</span> <span class="code-string">Cypress E2E Tests</span>
+
+<span class="code-key">on:</span>
+  <span class="code-key">push:</span>
+    <span class="code-key">branches:</span> [ <span class="code-string">main</span>, <span class="code-string">develop</span> ]
+  <span class="code-key">pull_request:</span>
+    <span class="code-key">branches:</span> [ <span class="code-string">main</span> ]
+
+<span class="code-key">jobs:</span>
+  <span class="code-key">cypress-run:</span>
+    <span class="code-key">runs-on:</span> <span class="code-string">ubuntu-latest</span>
+    
+    <span class="code-key">steps:</span>
+      - <span class="code-key">name:</span> <span class="code-string">Checkout repository</span>
+        <span class="code-key">uses:</span> <span class="code-string">actions/checkout@v4</span>
+
+      - <span class="code-key">name:</span> <span class="code-string">Setup Node.js</span>
+        <span class="code-key">uses:</span> <span class="code-string">actions/setup-node@v4</span>
+        <span class="code-key">with:</span>
+          <span class="code-key">node-version:</span> <span class="code-string">'18'</span>
+          <span class="code-key">cache:</span> <span class="code-string">'npm'</span>
+
+      - <span class="code-key">name:</span> <span class="code-string">Install dependencies</span>
+        <span class="code-key">run:</span> <span class="code-string">npm ci</span>
+
+      - <span class="code-key">name:</span> <span class="code-string">Run Cypress tests</span>
+        <span class="code-key">uses:</span> <span class="code-string">cypress-io/github-action@v6</span>
+        <span class="code-key">with:</span>
+          <span class="code-key">browser:</span> <span class="code-string">chrome</span>
+          <span class="code-key">headed:</span> <span class="code-string">false</span>
+
+      - <span class="code-key">name:</span> <span class="code-string">Upload test results</span>
+        <span class="code-key">uses:</span> <span class="code-string">actions/upload-artifact@v4</span>
+        <span class="code-key">if:</span> <span class="code-string">always()</span>
+        <span class="code-key">with:</span>
+          <span class="code-key">name:</span> <span class="code-string">cypress-results</span>
+          <span class="code-key">path:</span> <span class="code-string">cypress/results</span>
+
+      - <span class="code-key">name:</span> <span class="code-string">Upload screenshots on failure</span>
+        <span class="code-key">uses:</span> <span class="code-string">actions/upload-artifact@v4</span>
+        <span class="code-key">if:</span> <span class="code-string">failure()</span>
+        <span class="code-key">with:</span>
+          <span class="code-key">name:</span> <span class="code-string">cypress-screenshots</span>
+          <span class="code-key">path:</span> <span class="code-string">cypress/screenshots</span>
+                </code>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-cogs"></i> Pipeline Features</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fas fa-bolt"></i> Automatic Triggers</h4>
+                    <p>Tests run automatically on every push to main/develop and on all pull requests.</p>
+                </div>
+                <div class="feature-card">
+                    <h4><i class="fas fa-chrome"></i> Browser Testing</h4>
+                    <p>Tests execute in Chrome headless mode for fast, reliable execution.</p>
+                </div>
+                <div class="feature-card">
+                    <h4><i class="fas fa-camera"></i> Screenshot Capture</h4>
+                    <p>Automatic screenshot capture on test failures for easy debugging.</p>
+                </div>
+                <div class="feature-card">
+                    <h4><i class="fas fa-video"></i> Video Recording</h4>
+                    <p>Full test execution video recording for comprehensive analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <h4><i class="fas fa-chart-line"></i> Test Reports</h4>
+                    <p>HTML reports generated and uploaded as artifacts after each run.</p>
+                </div>
+                <div class="feature-card">
+                    <h4><i class="fas fa-bell"></i> Notifications</h4>
+                    <p>Instant notifications on test failures via GitHub status checks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-terminal"></i> Newman API Tests Integration</h2>
+            <p>API test automation using Newman CLI within the CI/CD pipeline:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <i class="fab fa-github"></i>
+                    <span>.github/workflows/api-tests.yml</span>
+                </div>
+                <code>
+<span class="code-key">name:</span> <span class="code-string">API Tests</span>
+
+<span class="code-key">on:</span>
+  <span class="code-key">push:</span>
+    <span class="code-key">branches:</span> [ <span class="code-string">main</span> ]
+  <span class="code-key">schedule:</span>
+    - <span class="code-key">cron:</span> <span class="code-string">'0 6 * * *'</span>  <span class="code-comment"># Daily at 6 AM</span>
+
+<span class="code-key">jobs:</span>
+  <span class="code-key">api-tests:</span>
+    <span class="code-key">runs-on:</span> <span class="code-string">ubuntu-latest</span>
+    
+    <span class="code-key">steps:</span>
+      - <span class="code-key">uses:</span> <span class="code-string">actions/checkout@v4</span>
+      
+      - <span class="code-key">name:</span> <span class="code-string">Install Newman</span>
+        <span class="code-key">run:</span> <span class="code-string">npm install -g newman newman-reporter-htmlextra</span>
+
+      - <span class="code-key">name:</span> <span class="code-string">Run API Tests</span>
+        <span class="code-key">run:</span> |
+          newman run postman/collection.json \
+            -e postman/environment.json \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export reports/api-report.html
+
+      - <span class="code-key">name:</span> <span class="code-string">Upload Report</span>
+        <span class="code-key">uses:</span> <span class="code-string">actions/upload-artifact@v4</span>
+        <span class="code-key">with:</span>
+          <span class="code-key">name:</span> <span class="code-string">api-test-report</span>
+          <span class="code-key">path:</span> <span class="code-string">reports/</span>
+                </code>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-check-circle"></i> Benefits</h2>
+            
+            <div class="highlight-box">
+                <h3><i class="fas fa-shield-alt"></i> Early Bug Detection</h3>
+                <p>Catch bugs before they reach production by running tests on every code change.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3><i class="fas fa-users"></i> Team Confidence</h3>
+                <p>Developers can merge code with confidence knowing tests have passed.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3><i class="fas fa-clock"></i> Time Savings</h3>
+                <p>Automated testing reduces manual testing effort and speeds up release cycles.</p>
+            </div>
+
+            <div class="button-group">
+                <a href="https://github.com/chinonsoqa/qaautomationlabs-e2e-tests" class="btn btn-github" target="_blank">
+                    <i class="fab fa-github"></i> View Repository
+                </a>
+                <a href="automation-projects.html" class="btn btn-primary">
+                    <i class="fas fa-robot"></i> See Automation Projects
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Chinonso Nwosu. <a href="index.html">Back to Home</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Reports — Chinonso Nwosu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --secondary: #6366f1;
+            --accent: #14b8a6;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gradient-1: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #14b8a6 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb-1 { top: -200px; right: -200px; background: var(--danger); }
+        .glow-orb-2 { bottom: -200px; left: -200px; background: var(--secondary); }
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100px; height: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb span { color: var(--primary); }
+        .page-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-header h1 i {
+            background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 1rem;
+        }
+        .page-header p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+        .content { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+        .content-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .content-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .content-section h2 i { color: var(--primary); }
+        .content-section p { color: var(--text-muted); margin-bottom: 1rem; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: var(--primary); }
+        .bug-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .bug-card:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+        .bug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .bug-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .bug-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        .severity-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .severity-critical {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .severity-high {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .severity-medium {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+        .severity-low {
+            background: rgba(20, 184, 166, 0.2);
+            color: #14b8a6;
+            border: 1px solid rgba(20, 184, 166, 0.3);
+        }
+        .bug-details { margin-top: 1rem; }
+        .bug-details h4 {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .bug-details p, .bug-details ol {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .bug-details ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .bug-details li { margin-bottom: 0.5rem; }
+        .bug-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--card-border);
+            flex-wrap: wrap;
+        }
+        .bug-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .bug-meta-item i { color: var(--primary); }
+        .highlight-box {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .highlight-box h3 {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(14, 165, 233, 0.4); }
+        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+        footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+        }
+        footer p { color: var(--text-muted); font-size: 0.9rem; }
+        footer a { color: var(--primary); text-decoration: none; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .content { padding: 2rem 1rem; }
+            .bug-header { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <nav>
+        <div class="nav-content">
+            <a href="index.html" class="logo">CN</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#portfolio">Portfolio</a></li>
+                <li><a href="automation-projects.html">Automation</a></li>
+                <li><a href="api-testing.html">API Testing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>Bug Reports</span>
+        </div>
+        <h1><i class="fas fa-bug"></i> Bug Reports</h1>
+        <p>Professional bug documentation demonstrating defect identification, analysis, and reporting skills</p>
+    </header>
+
+    <main class="content">
+        <a href="index.html#portfolio" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Portfolio
+        </a>
+
+        <section class="content-section">
+            <h2><i class="fas fa-info-circle"></i> Bug Reporting Approach</h2>
+            <p>Each bug report follows a structured format ensuring clear communication with developers and stakeholders. My reports include all necessary information for quick reproduction and resolution.</p>
+            
+            <div class="highlight-box">
+                <h3>Report Structure</h3>
+                <p>Bug ID • Title • Severity • Priority • Environment • Steps to Reproduce • Expected Result • Actual Result • Screenshots/Evidence • Additional Notes</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Sample Bug Reports</h2>
+
+            <div class="bug-card">
+                <div class="bug-header">
+                    <div>
+                        <span class="bug-id">BUG-001</span>
+                        <h3 class="bug-title">Shopping Cart Total Not Updating After Quantity Change</h3>
+                    </div>
+                    <span class="severity-badge severity-critical">Critical</span>
+                </div>
+                <div class="bug-details">
+                    <h4>Steps to Reproduce</h4>
+                    <ol>
+                        <li>Navigate to the e-commerce website</li>
+                        <li>Add any product to the shopping cart</li>
+                        <li>Go to the cart page</li>
+                        <li>Change the quantity from 1 to 3</li>
+                        <li>Observe the cart total</li>
+                    </ol>
+                    <h4>Expected Result</h4>
+                    <p>Cart total should update to reflect 3x the product price</p>
+                    <h4>Actual Result</h4>
+                    <p>Cart total remains unchanged showing price for 1 item only</p>
+                </div>
+                <div class="bug-meta">
+                    <div class="bug-meta-item"><i class="fas fa-desktop"></i> Chrome 120, Windows 11</div>
+                    <div class="bug-meta-item"><i class="fas fa-layer-group"></i> Cart Module</div>
+                    <div class="bug-meta-item"><i class="fas fa-flag"></i> Priority: P1</div>
+                </div>
+            </div>
+
+            <div class="bug-card">
+                <div class="bug-header">
+                    <div>
+                        <span class="bug-id">BUG-002</span>
+                        <h3 class="bug-title">Login Form Accepts Empty Password Field</h3>
+                    </div>
+                    <span class="severity-badge severity-high">High</span>
+                </div>
+                <div class="bug-details">
+                    <h4>Steps to Reproduce</h4>
+                    <ol>
+                        <li>Navigate to the login page</li>
+                        <li>Enter valid email address</li>
+                        <li>Leave password field empty</li>
+                        <li>Click "Sign In" button</li>
+                    </ol>
+                    <h4>Expected Result</h4>
+                    <p>Validation error should display: "Password is required"</p>
+                    <h4>Actual Result</h4>
+                    <p>Form submits and shows generic "Login failed" error after server response</p>
+                </div>
+                <div class="bug-meta">
+                    <div class="bug-meta-item"><i class="fas fa-desktop"></i> All Browsers</div>
+                    <div class="bug-meta-item"><i class="fas fa-layer-group"></i> Authentication</div>
+                    <div class="bug-meta-item"><i class="fas fa-flag"></i> Priority: P2</div>
+                </div>
+            </div>
+
+            <div class="bug-card">
+                <div class="bug-header">
+                    <div>
+                        <span class="bug-id">BUG-003</span>
+                        <h3 class="bug-title">Product Images Not Loading on Category Page</h3>
+                    </div>
+                    <span class="severity-badge severity-medium">Medium</span>
+                </div>
+                <div class="bug-details">
+                    <h4>Steps to Reproduce</h4>
+                    <ol>
+                        <li>Navigate to "Electronics" category</li>
+                        <li>Scroll through the product listing</li>
+                        <li>Observe product thumbnails</li>
+                    </ol>
+                    <h4>Expected Result</h4>
+                    <p>All product images should load and display correctly</p>
+                    <h4>Actual Result</h4>
+                    <p>~30% of product images show broken image placeholder</p>
+                </div>
+                <div class="bug-meta">
+                    <div class="bug-meta-item"><i class="fas fa-desktop"></i> Firefox 121, macOS</div>
+                    <div class="bug-meta-item"><i class="fas fa-layer-group"></i> Product Catalog</div>
+                    <div class="bug-meta-item"><i class="fas fa-flag"></i> Priority: P3</div>
+                </div>
+            </div>
+
+            <div class="bug-card">
+                <div class="bug-header">
+                    <div>
+                        <span class="bug-id">BUG-004</span>
+                        <h3 class="bug-title">Search Results Count Mismatch</h3>
+                    </div>
+                    <span class="severity-badge severity-low">Low</span>
+                </div>
+                <div class="bug-details">
+                    <h4>Steps to Reproduce</h4>
+                    <ol>
+                        <li>Enter "laptop" in search field</li>
+                        <li>Press Enter or click search icon</li>
+                        <li>Observe the results count message</li>
+                        <li>Count the actual products displayed</li>
+                    </ol>
+                    <h4>Expected Result</h4>
+                    <p>Results count should match actual products shown</p>
+                    <h4>Actual Result</h4>
+                    <p>Message says "15 results" but only 12 products are displayed</p>
+                </div>
+                <div class="bug-meta">
+                    <div class="bug-meta-item"><i class="fas fa-desktop"></i> Safari 17, iOS</div>
+                    <div class="bug-meta-item"><i class="fas fa-layer-group"></i> Search</div>
+                    <div class="bug-meta-item"><i class="fas fa-flag"></i> Priority: P4</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-download"></i> Download Full Bug Reports</h2>
+            <p>Access the complete bug reports with screenshots, environment details, and additional documentation.</p>
+            
+            <div class="button-group">
+                <a href="assets/docs/Chinonso_Nwosu_QA_Portfolio_Test_Pack.xlsx" class="btn btn-primary" download>
+                    <i class="fas fa-file-excel"></i> Download Bug Reports (.xlsx)
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Chinonso Nwosu. <a href="index.html">Back to Home</a></p>
+    </footer>
+</body>
+</html>

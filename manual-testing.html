@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Testing Artifacts — Chinonso Nwosu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #6366f1;
+            --accent: #14b8a6;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gradient-1: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #14b8a6 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb-1 { top: -200px; right: -200px; background: var(--primary); }
+        .glow-orb-2 { bottom: -200px; left: -200px; background: var(--secondary); }
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100px; height: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb span { color: var(--primary); }
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .page-header h1 i {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 1rem;
+        }
+        .page-header p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+        .content { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+        .content-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .content-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .content-section h2 i { color: var(--primary); }
+        .content-section p { color: var(--text-muted); margin-bottom: 1rem; }
+        .content-section ul { list-style: none; margin: 1.5rem 0; }
+        .content-section li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+        .content-section li i { color: var(--accent); margin-top: 0.25rem; }
+        .highlight-box {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .highlight-box h3 {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(14, 165, 233, 0.4); }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--card-border);
+        }
+        .btn-secondary:hover { border-color: var(--primary); background: rgba(14, 165, 233, 0.1); }
+        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+        .demo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+        th {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        td { color: var(--text-muted); }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: var(--primary); }
+        footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+        }
+        footer p { color: var(--text-muted); font-size: 0.9rem; }
+        footer a { color: var(--primary); text-decoration: none; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .content { padding: 2rem 1rem; }
+            .content-section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <nav>
+        <div class="nav-content">
+            <a href="index.html" class="logo">CN</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#portfolio">Portfolio</a></li>
+                <li><a href="automation-projects.html">Automation</a></li>
+                <li><a href="api-testing.html">API Testing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>Manual Testing</span>
+        </div>
+        <h1><i class="fas fa-clipboard-list"></i> Manual Testing Artifacts</h1>
+        <p>Comprehensive test documentation showcasing structured QA methodologies for web application testing</p>
+    </header>
+
+    <main class="content">
+        <a href="index.html#portfolio" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Portfolio
+        </a>
+
+        <div class="demo-badge">
+            <i class="fas fa-store"></i>
+            Demo Application: shop.qaautomationlabs.com
+        </div>
+
+        <section class="content-section">
+            <h2><i class="fas fa-bullseye"></i> Overview</h2>
+            <p>This section showcases my manual testing artifacts developed for an e-commerce web application. Each artifact demonstrates a structured approach to quality assurance, following industry best practices and ISTQB standards.</p>
+            
+            <div class="highlight-box">
+                <h3>Application Under Test</h3>
+                <p>E-commerce platform featuring product catalog, shopping cart, checkout process, and user account management. All test cases are designed to validate core business flows and edge cases.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-file-alt"></i> Test Plan</h2>
+            <p>A comprehensive test plan document outlining the testing strategy, scope, objectives, and approach for the e-commerce application.</p>
+            <ul>
+                <li><i class="fas fa-check"></i> <strong>Scope Definition:</strong> Clear boundaries of what will and won't be tested</li>
+                <li><i class="fas fa-check"></i> <strong>Test Objectives:</strong> Specific, measurable goals for the testing effort</li>
+                <li><i class="fas fa-check"></i> <strong>Test Strategy:</strong> Approach for different testing types (functional, regression, smoke)</li>
+                <li><i class="fas fa-check"></i> <strong>Entry/Exit Criteria:</strong> Defined conditions for starting and completing testing</li>
+                <li><i class="fas fa-check"></i> <strong>Risk Assessment:</strong> Identified risks and mitigation strategies</li>
+                <li><i class="fas fa-check"></i> <strong>Resource Allocation:</strong> Team roles and responsibilities</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-list-check"></i> Test Cases</h2>
+            <p>Detailed test cases covering all major functionalities of the application with clear steps, expected results, and test data.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Test Cases</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>User Registration & Login</td>
+                        <td>15+ test cases</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>Product Search & Filter</td>
+                        <td>20+ test cases</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>Shopping Cart</td>
+                        <td>18+ test cases</td>
+                        <td>Critical</td>
+                    </tr>
+                    <tr>
+                        <td>Checkout Process</td>
+                        <td>25+ test cases</td>
+                        <td>Critical</td>
+                    </tr>
+                    <tr>
+                        <td>User Account Management</td>
+                        <td>12+ test cases</td>
+                        <td>Medium</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                <h3>Test Case Structure</h3>
+                <p>Each test case includes: Test ID, Title, Preconditions, Test Steps, Expected Results, Actual Results, Status, Priority, and Notes.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-project-diagram"></i> Requirements Traceability Matrix (RTM)</h2>
+            <p>A comprehensive matrix mapping business requirements to test cases, ensuring complete test coverage.</p>
+            <ul>
+                <li><i class="fas fa-check"></i> Requirement ID to Test Case mapping</li>
+                <li><i class="fas fa-check"></i> Coverage percentage tracking</li>
+                <li><i class="fas fa-check"></i> Gap identification for untested requirements</li>
+                <li><i class="fas fa-check"></i> Priority-based test execution planning</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-chart-bar"></i> Test Execution Reports</h2>
+            <p>Summary reports from test execution cycles showing pass/fail rates, defect density, and quality metrics.</p>
+            <ul>
+                <li><i class="fas fa-check"></i> Test execution summary with pass/fail statistics</li>
+                <li><i class="fas fa-check"></i> Defect distribution by severity and module</li>
+                <li><i class="fas fa-check"></i> Test coverage metrics</li>
+                <li><i class="fas fa-check"></i> Recommendations for future testing cycles</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2><i class="fas fa-download"></i> Download Artifacts</h2>
+            <p>Download the complete QA Portfolio Test Pack containing all manual testing artifacts in Excel format.</p>
+            
+            <div class="button-group">
+                <a href="assets/docs/Chinonso_Nwosu_QA_Portfolio_Test_Pack.xlsx" class="btn btn-primary" download>
+                    <i class="fas fa-file-excel"></i> Download Test Pack (.xlsx)
+                </a>
+                <a href="Chinonso_Nwosu_Portfolio_Pack.zip" class="btn btn-secondary" download>
+                    <i class="fas fa-file-archive"></i> Download Full Portfolio (.zip)
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Chinonso Nwosu. <a href="index.html">Back to Home</a></p>
+    </footer>
+</body>
+</html>

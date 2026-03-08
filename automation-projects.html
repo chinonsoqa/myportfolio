@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Projects — Chinonso Nwosu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --secondary: #6366f1;
+            --accent: #14b8a6;
+            --cypress: #69d3a7;
+            --selenium: #43b02a;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gradient-1: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #14b8a6 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .glow-orb-1 { top: -200px; right: -200px; background: var(--cypress); }
+        .glow-orb-2 { bottom: -200px; left: -200px; background: var(--secondary); }
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100px; height: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb span { color: var(--primary); }
+        .page-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-header h1 i {
+            background: linear-gradient(135deg, #69d3a7 0%, #43b02a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 1rem;
+        }
+        .page-header p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+        .content { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+        .content-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .content-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .content-section h2 i { color: var(--primary); }
+        .content-section p { color: var(--text-muted); margin-bottom: 1rem; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover { color: var(--primary); }
+        .project-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        .project-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .project-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .project-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .project-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .icon-cypress { background: rgba(105, 211, 167, 0.2); color: var(--cypress); }
+        .icon-selenium { background: rgba(67, 176, 42, 0.2); color: var(--selenium); }
+        .project-title h3 { font-size: 1.25rem; }
+        .project-title span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .tech-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .tech-badge {
+            padding: 0.25rem 0.75rem;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .project-body { padding: 1.5rem; }
+        .project-body p { margin-bottom: 1.5rem; }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .feature-item i {
+            color: var(--accent);
+            margin-top: 0.25rem;
+        }
+        .feature-item span { color: var(--text-muted); font-size: 0.95rem; }
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-function { color: #dcdcaa; }
+        .project-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(14, 165, 233, 0.4); }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--card-border);
+        }
+        .btn-secondary:hover { border-color: var(--primary); background: rgba(14, 165, 233, 0.1); }
+        .highlight-box {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .highlight-box h3 {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+        footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+        }
+        footer p { color: var(--text-muted); font-size: 0.9rem; }
+        footer a { color: var(--primary); text-decoration: none; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .content { padding: 2rem 1rem; }
+            .project-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <nav>
+        <div class="nav-content">
+            <a href="index.html" class="logo">CN</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#portfolio">Portfolio</a></li>
+                <li><a href="manual-testing.html">Manual Testing</a></li>
+                <li><a href="api-testing.html">API Testing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>Automation Projects</span>
+        </div>
+        <h1><i class="fas fa-robot"></i> Automation Projects</h1>
+        <p>End-to-end test automation solutions using modern frameworks and best practices</p>
+    </header>
+
+    <main class="content">
+        <a href="index.html#portfolio" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Portfolio
+        </a>
+
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-title">
+                    <div class="project-icon icon-cypress">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <div>
+                        <h3>E-commerce E2E Test Suite</h3>
+                        <span>Cypress Framework</span>
+                    </div>
+                </div>
+                <div class="tech-badges">
+                    <span class="tech-badge">Cypress</span>
+                    <span class="tech-badge">JavaScript</span>
+                    <span class="tech-badge">GitHub Actions</span>
+                    <span class="tech-badge">POM</span>
+                </div>
+            </div>
+            <div class="project-body">
+                <p>A comprehensive end-to-end test automation suite for an e-commerce platform, covering the complete user journey from product browsing to checkout completion.</p>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>User authentication flows (login, registration, password reset)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Product search, filtering, and sorting</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Shopping cart management (add, remove, update quantities)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Complete checkout process validation</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Page Object Model architecture</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>CI/CD integration with GitHub Actions</span>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <code>
+<span class="code-comment">// Example: Login test with Page Object Model</span>
+<span class="code-keyword">describe</span>(<span class="code-string">'User Authentication'</span>, () => {
+    <span class="code-keyword">beforeEach</span>(() => {
+        cy.<span class="code-function">visit</span>(<span class="code-string">'/login'</span>);
+    });
+
+    <span class="code-keyword">it</span>(<span class="code-string">'should login with valid credentials'</span>, () => {
+        LoginPage.<span class="code-function">enterEmail</span>(<span class="code-string">'user@test.com'</span>);
+        LoginPage.<span class="code-function">enterPassword</span>(<span class="code-string">'SecurePass123'</span>);
+        LoginPage.<span class="code-function">clickSubmit</span>();
+        
+        cy.<span class="code-function">url</span>().<span class="code-function">should</span>(<span class="code-string">'include'</span>, <span class="code-string">'/dashboard'</span>);
+        HomePage.<span class="code-function">getWelcomeMessage</span>()
+            .<span class="code-function">should</span>(<span class="code-string">'contain'</span>, <span class="code-string">'Welcome'</span>);
+    });
+});
+                    </code>
+                </div>
+            </div>
+            <div class="project-footer">
+                <a href="https://github.com/chinonsoqa/qaautomationlabs-e2e-tests" class="btn btn-primary" target="_blank">
+                    <i class="fab fa-github"></i> View Repository
+                </a>
+                <a href="ci-cd.html" class="btn btn-secondary">
+                    <i class="fas fa-infinity"></i> View CI/CD Setup
+                </a>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-title">
+                    <div class="project-icon icon-selenium">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div>
+                        <h3>Cross-Browser Test Framework</h3>
+                        <span>Selenium WebDriver</span>
+                    </div>
+                </div>
+                <div class="tech-badges">
+                    <span class="tech-badge">Selenium</span>
+                    <span class="tech-badge">Java</span>
+                    <span class="tech-badge">TestNG</span>
+                    <span class="tech-badge">Maven</span>
+                </div>
+            </div>
+            <div class="project-body">
+                <p>A robust cross-browser testing framework built with Selenium WebDriver and Java, designed for parallel test execution across multiple browsers and environments.</p>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Cross-browser testing (Chrome, Firefox, Edge)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Parallel test execution with TestNG</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Data-driven testing with Excel/CSV</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Screenshot capture on failure</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Extent Reports integration</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Reusable utility methods</span>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <code>
+<span class="code-comment">// Example: Page Object with Selenium WebDriver</span>
+<span class="code-keyword">public class</span> LoginPage {
+    <span class="code-keyword">private</span> WebDriver driver;
+    
+    @FindBy(id = <span class="code-string">"email"</span>)
+    <span class="code-keyword">private</span> WebElement emailField;
+    
+    @FindBy(id = <span class="code-string">"password"</span>)
+    <span class="code-keyword">private</span> WebElement passwordField;
+    
+    <span class="code-keyword">public void</span> <span class="code-function">login</span>(String email, String password) {
+        emailField.<span class="code-function">sendKeys</span>(email);
+        passwordField.<span class="code-function">sendKeys</span>(password);
+        submitButton.<span class="code-function">click</span>();
+    }
+}
+                    </code>
+                </div>
+            </div>
+            <div class="project-footer">
+                <a href="https://github.com/chinonsoqa" class="btn btn-primary" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </div>
+        </div>
+
+        <section class="content-section">
+            <h2><i class="fas fa-code"></i> Framework Architecture</h2>
+            <p>Both automation frameworks follow industry best practices and design patterns:</p>
+            
+            <div class="highlight-box">
+                <h3>Page Object Model (POM)</h3>
+                <p>Separates test logic from page interactions, making tests more maintainable and reducing code duplication across test suites.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Data-Driven Testing</h3>
+                <p>Test data is externalized to JSON/Excel files, allowing easy test data management and enabling the same tests to run with multiple data sets.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>CI/CD Integration</h3>
+                <p>Automated test execution on every commit using GitHub Actions, with test reports and notifications for failed runs.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Chinonso Nwosu. <a href="index.html">Back to Home</a></p>
+    </footer>
+</body>
+</html>
